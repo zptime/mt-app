@@ -76,6 +76,7 @@ module.exports = {
         })
       }
     },
-    cache: true // 启用缓存 terser-webpack-plugin 和 cache-loader
+    // https://github.com/nuxt/nuxt.js/issues/3804
+    cache: false // 启用缓存 terser-webpack-plugin 和 cache-loader
   }
 }
