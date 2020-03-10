@@ -50,3 +50,8 @@ $ npm install @babel/cli @babel/core @babel/preset-env @babel/node -D
     }
 }
 ```
+
+## 邮箱验证码发送
+
+1. 发送验证码到邮箱有问题，邮箱收不到邮件
+2. 注册页面，邮箱和验证码随便填都可以通过，此处处理有问题
