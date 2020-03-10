@@ -39,7 +39,7 @@ footer{
 }
 
 a, a:hover, a:focus, a:visited{
-  color: #41B883;
+  color: #FE8C00;
 }
 
 .logo {
@@ -52,4 +52,13 @@ a, a:hover, a:focus, a:visited{
 }
 .page-enter, .page-leave-active{
   opacity: 0
+}
+
+.el-button--primary {
+  background-image: linear-gradient(135deg,#FFD000 0,#FFBD00 100%);
+  border-width: 0;
+  box-shadow: 0 2px 1px rgba(191,105,0,.15);
+  border-color: rgba(191,105,0,.15);
+  background-size: 100%;
+  *zoom: 1;
 }
