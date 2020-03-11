@@ -8,6 +8,7 @@ import passport from './dbs/interface/utils/passport'
 import users from './dbs/interface/users'
 import geo from './dbs/interface/geo'
 import search from './dbs/interface/search'
+import category from './dbs/interface/category'
 
 const Koa = require('koa')
 const consola = require('consola')
@@ -65,6 +66,7 @@ async function start () {
   app.use(users.routes()).use(users.allowedMethods())
   app.use(geo.routes()).use(geo.allowedMethods())
   app.use(search.routes()).use(search.allowedMethods())
+  app.use(category.routes()).use(category.allowedMethods())
 
   app.use((ctx) => {
     ctx.status = 200
