@@ -1,11 +1,3 @@
-const Koa = require('koa')
-// import Koa from 'koa'
-const consola = require('consola')
-const {
-  Nuxt,
-  Builder
-} = require('nuxt')
-
 import mongoose from 'mongoose'
 import bodyParser from 'koa-bodyparser'
 import session from 'koa-generic-session'
@@ -14,6 +6,15 @@ import json from 'koa-json'
 import dbConfig from './dbs/config'
 import passport from './dbs/interface/utils/passport'
 import users from './dbs/interface/users'
+import geo from './dbs/interface/geo'
+import search from './dbs/interface/search'
+
+const Koa = require('koa')
+const consola = require('consola')
+const {
+  Nuxt,
+  Builder
+} = require('nuxt')
 
 const app = new Koa()
 
@@ -32,9 +33,9 @@ app.use(json())
 // 数据库连接及session配置
 mongoose.set('useCreateIndex', true)
 mongoose.connect(dbConfig.dbs, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
   .then(() => console.log('数据库连接成功！'))
   .catch(() => console.log('数据库连接失败!'))
 app.use(passport.initialize())
@@ -44,13 +45,13 @@ app.use(passport.session())
 const config = require('../nuxt.config.js')
 config.dev = app.env !== 'production'
 
-async function start() {
+async function start () {
   // Instantiate nuxt.js
   const nuxt = new Nuxt(config)
 
   const {
     host = process.env.HOST || '127.0.0.1',
-      port = process.env.PORT || 3000
+    port = process.env.PORT || 3000
   } = nuxt.options.server
 
   await nuxt.ready()
@@ -62,6 +63,8 @@ async function start() {
 
   // 路由配置
   app.use(users.routes()).use(users.allowedMethods())
+  app.use(geo.routes()).use(geo.allowedMethods())
+  app.use(search.routes()).use(search.allowedMethods())
 
   app.use((ctx) => {
     ctx.status = 200
