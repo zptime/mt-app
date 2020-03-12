@@ -6,11 +6,11 @@ import Passport from './utils/passport'
 import Email from './../../dbs/config'
 import axios from './utils/axios'
 
-let router = new Router({
+const router = new Router({
   prefix: '/users'
 })
 
-let Store = new Redis().client
+const Store = new Redis().client
 
 // 注册接口
 router.post('/signup', async (ctx) => {
@@ -47,7 +47,7 @@ router.post('/signup', async (ctx) => {
   }
 
   // 用户名处理
-  let user = await User.find({
+  const user = await User.find({
     username
   })
   if (user.length) {
@@ -57,13 +57,13 @@ router.post('/signup', async (ctx) => {
     }
     return
   }
-  let nuser = await User.create({
+  const nuser = await User.create({
     username,
     password,
     email
   })
   if (nuser) {
-    let res = await axios.post('/users/signin', {
+    const res = await axios.post('/users/signin', {
       username,
       password
     })
@@ -88,26 +88,24 @@ router.post('/signup', async (ctx) => {
 })
 
 // 登录接口
-router.post('/signin', async (ctx, next) => {
+router.post('/signin', (ctx, next) => {
   return Passport.authenticate('local', (err, user, info, status) => {
     if (err) {
       ctx.body = {
         code: -1,
         msg: err
       }
+    } else if (user) {
+      ctx.body = {
+        code: 0,
+        msg: '登录成功',
+        user
+      }
+      return ctx.login(user)
     } else {
-      if (user) {
-        ctx.body = {
-          code: 0,
-          msg: '登录成功',
-          user
-        }
-        return ctx.login(user)
-      } else {
-        ctx.body = {
-          code: 1,
-          msg: info
-        }
+      ctx.body = {
+        code: 1,
+        msg: info
       }
     }
   })(ctx, next)
@@ -115,7 +113,7 @@ router.post('/signin', async (ctx, next) => {
 
 // 邮件验证
 router.post('/verify', async (ctx, next) => {
-  let {
+  const {
     username
   } = ctx.request.body
   const saveExpire = await Store.hget(`nodemail:${username}`, 'expire')
@@ -126,7 +124,7 @@ router.post('/verify', async (ctx, next) => {
     }
     return false
   }
-  let transporter = nodeMailer.createTransport({
+  const transporter = nodeMailer.createTransport({
     host: Email.smtp.host,
     port: Email.smtp.port,
     secure: false,
@@ -135,13 +133,13 @@ router.post('/verify', async (ctx, next) => {
       pass: Email.smtp.pass
     }
   })
-  let ko = {
+  const ko = {
     code: Email.smtp.code(),
     expire: Email.smtp.expire(),
     email: ctx.request.body.email,
     user: ctx.request.body.username
   }
-  let mailOptions = {
+  const mailOptions = {
     from: `"认证邮件" <${Email.smtp.user}>`,
     to: ko.email,
     subject: '《慕课网高仿美团网全栈实战》注册码',
@@ -175,7 +173,7 @@ router.get('/exit', async (ctx, next) => {
 })
 
 // 获取用户信息
-router.get('/getUser', async (ctx) => {
+router.get('/getUser', (ctx) => {
   if (ctx.isAuthenticated()) {
     const {
       username,

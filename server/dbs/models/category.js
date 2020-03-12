@@ -6,11 +6,11 @@ const Categroy = new Schema({
   },
   types: {
     type: Array,
-    require: true
+    required: true
   },
   areas: {
     type: Array,
-    require: true
+    required: true
   }
 })
 
